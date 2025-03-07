@@ -25,6 +25,7 @@ jobs:
         uses: callowayproject/bump-my-version@master
         env:
           BUMPVERSION_TAG: "true"
+          token: ${{ secrets.PAT }}
         with:
           args: ${{ inputs.bump-type }}
           github-token: ${{ secrets.GH_TOKEN }}
