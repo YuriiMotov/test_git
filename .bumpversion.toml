@@ -1,5 +1,4 @@
 [tool.bumpversion]
-current_version = "1.0.2"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = ["{major}.{minor}.{patch}"]
 search = "{current_version}"
@@ -17,4 +16,5 @@ commit_args = "--no-verify"
 
 [[tool.bumpversion.files]]
 filename = "pyproject.toml"
-search = "[tool.poetry]\nname = \"test-git\"\nversion = \"{current_version}\""
+search = "[tool.poetry]\nversion = \"{current_version}\""
+replace = "[tool.poetry]\nversion = \"{new_version}\""
