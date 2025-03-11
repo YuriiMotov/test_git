@@ -27,8 +27,7 @@ jobs:
           BUMPVERSION_TAG: "false"
         with:
           args: ${{ inputs.bump-type }}
-          token: ${{ secrets.PAT }}
-          github-token: ${{ secrets.GH_TOKEN }}
+          github-token: ${{ secrets.PAT }}
 
       - name: Check
         if: steps.bump.outputs.bumped == 'true'
