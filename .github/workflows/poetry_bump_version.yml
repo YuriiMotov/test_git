@@ -1,0 +1,37 @@
+name: Poetry Bump Version
+
+on:
+  workflow_dispatch:  # Manually trigger the workflow
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required for pushing changes
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: |
+          pip install poetry
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version (patch)
+        run: |
+          poetry version patch
+          NEW_VERSION=$(poetry version -s)
+          echo "New version: $NEW_VERSION"
+          git add pyproject.toml
+          git commit -m "Bump version to $NEW_VERSION"
+          git push
