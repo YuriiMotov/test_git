@@ -24,10 +24,10 @@ jobs:
         id: bump
         uses: callowayproject/bump-my-version@master
         env:
-          BUMPVERSION_TAG: "true"
-          token: ${{ secrets.PAT }}
+          BUMPVERSION_TAG: "false"
         with:
           args: ${{ inputs.bump-type }}
+          token: ${{ secrets.PAT }}
           github-token: ${{ secrets.GH_TOKEN }}
 
       - name: Check
