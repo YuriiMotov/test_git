@@ -161,11 +161,11 @@ def process_issue(*, issue: Issue, settings: Settings) -> None:
             last_comment = comment
 
     if last_comment:
-        logging(f"Last comment body: {last_comment.body}")
-        logging(f"Last comment body html: {last_comment.body_html}")
-        logging(f"Last comment body text: {last_comment.body_text}")
+        logging.info(f"Last comment body: {last_comment.body}")
+        logging.info(f"Last comment body html: {last_comment.body_html}")
+        logging.info(f"Last comment body text: {last_comment.body_text}")
     else:
-        logging("Last comment is None")
+        logging.info("Last comment is None")
     # ------
 
     now = datetime.now(timezone.utc)
