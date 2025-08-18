@@ -150,6 +150,24 @@ def process_issue(*, issue: Issue, settings: Settings) -> None:
     labeled_events = get_labeled_events(events)
     last_date = get_last_interaction_date(issue)
     last_reminder_date = get_last_reminder_date(issue)
+
+    # ----
+    comments = issue.get_comments()
+    last_date: Optional[datetime] = None
+    last_comment: Optional[IssueComment] = None
+    for comment in comments:
+        if not last_date or (comment.created_at > last_date):
+            last_date = comment.created_at
+            last_comment = comment
+
+    if last_comment:
+        logging(f"Last comment body: {last_comment.body}")
+        logging(f"Last comment body html: {last_comment.body_html}")
+        logging(f"Last comment body text: {last_comment.body_text}")
+    else:
+        logging("Last comment is None")
+    # ------
+
     now = datetime.now(timezone.utc)
     for keyword, keyword_meta in settings.input_config.items():
         # Check closable delay, if enough time passed and the issue could be closed
@@ -164,11 +182,14 @@ def process_issue(*, issue: Issue, settings: Settings) -> None:
             )
             # Check if we need to send a reminder
             scheduled_close_date = keyword_event.created_at + keyword_meta.delay
+            logging.info(f"Planed close date: {scheduled_close_date}")
             remind = False
             if keyword_meta.remind_before_close_delay:
                 remind_time = (  # Time point after which we should send reminder
                     scheduled_close_date - keyword_meta.remind_before_close_delay
                 )
+                logging.info(f"Remind time: {remind_time}")
+                logging.info(f"Last reminder data: {last_reminder_date}")
                 remind = (
                     (now > remind_time)  # It's time to send reminder
                     and (  # .. and it hasn't been sent yet
