@@ -2,7 +2,7 @@ name: Issue Manager
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/30 * * * *"
   issue_comment:
     types:
       - created
@@ -39,11 +39,11 @@ jobs:
             {
               "$schema": "https://raw.githubusercontent.com/tiangolo/issue-manager/master/schema.json",
               "waiting": {
-                "delay": "P0DT0H15M5S",
-                "message": "Closing after 15 minutes of waiting for the additional info requested.",
+                "delay": "PT1H",
+                "message": "Closing after 1 hour of waiting for the additional info requested.",
                 "remove_label_on_comment": true,
                 "remove_label_on_close": true,
-                "remind_before_close_delay": "P0DT0H5M0S",
+                "remind_before_close_delay": "PT30M",
                 "remind_before_close_message": "We are still waiting for info"
               }
             }
