@@ -2,9 +2,9 @@ name: Poetry Bump Version
 
 on:
   workflow_dispatch:  # Manually trigger the workflow
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   bump-version:
