@@ -52,14 +52,18 @@ class PartialGitHubEvent(BaseModel):
 def filter_comments(
     comments: PaginatedList[IssueComment], include: Literal["regular", "reminder"]
 ) -> list[IssueComment]:
-    return [
-        comment
-        for comment in comments
-        if (
-            ((include == "reminder") and comment.body.startswith(REMINDER_MARKER))
-            or (include == "regular")
-        )
-    ]
+    if include == "regular":
+        return [
+            comment
+            for comment in comments
+            if not comment.body.startswith(REMINDER_MARKER)
+        ]
+    elif include == "reminder":
+        return [
+            comment for comment in comments if comment.body.startswith(REMINDER_MARKER)
+        ]
+    else:
+        raise ValueError(f"Unsupported value of include ({include})")
 
 
 def get_last_interaction_date(issue: Issue) -> Optional[datetime]:
@@ -71,12 +75,8 @@ def get_last_interaction_date(issue: Issue) -> Optional[datetime]:
         reviews = list(pr.get_reviews())
         pr_comments = list(pr.get_comments())
         interactions = comments + pr_comments
-        interaction_dates = [
-            interaction.created_at for interaction in interactions
-        ]
-        interaction_dates.extend(
-            [commit.commit.author.date for commit in commits]
-        )
+        interaction_dates = [interaction.created_at for interaction in interactions]
+        interaction_dates.extend([commit.commit.author.date for commit in commits])
         interaction_dates.extend([review.submitted_at for review in reviews])
     else:
         interactions = comments
@@ -112,7 +112,7 @@ def get_last_event_for_label(
 
 
 def get_last_reminder_date(issue: Issue) -> Optional[datetime]:
-    """ Get date of last reminder message was sent """
+    """Get date of last reminder message was sent"""
     last_date: Optional[datetime] = None
     comments = filter_comments(issue.get_comments(), include="reminder")
     comment_dates = [comment.created_at for comment in comments]
@@ -149,21 +149,20 @@ def process_issue(*, issue: Issue, settings: Settings) -> None:
     events = list(issue.get_events())
     labeled_events = get_labeled_events(events)
     last_date = get_last_interaction_date(issue)
+    logging.info(f"Last non-reminder comment date: {last_date}")
     last_reminder_date = get_last_reminder_date(issue)
 
     # ----
     comments = issue.get_comments()
-    last_date: Optional[datetime] = None
+    last_comment_date: Optional[datetime] = None
     last_comment: Optional[IssueComment] = None
     for comment in comments:
-        if not last_date or (comment.created_at > last_date):
-            last_date = comment.created_at
+        if not last_comment_date or (comment.created_at > last_comment_date):
+            last_comment_date = comment.created_at
             last_comment = comment
 
     if last_comment:
         logging.info(f"Last comment body: {last_comment.body}")
-        logging.info(f"Last comment body html: {last_comment.body_html}")
-        logging.info(f"Last comment body text: {last_comment.body_text}")
     else:
         logging.info("Last comment is None")
     # ------
@@ -171,9 +170,7 @@ def process_issue(*, issue: Issue, settings: Settings) -> None:
     now = datetime.now(timezone.utc)
     for keyword, keyword_meta in settings.input_config.items():
         # Check closable delay, if enough time passed and the issue could be closed
-        closable_delay = (
-            last_date is None or (now - keyword_meta.delay) > last_date
-        )
+        closable_delay = last_date is None or (now - keyword_meta.delay) > last_date
         # Check label, optionally removing it if there's a comment after adding it
         if keyword in label_strs:
             logging.info(f'Keyword: "{keyword}" in issue labels')
@@ -189,7 +186,7 @@ def process_issue(*, issue: Issue, settings: Settings) -> None:
                     scheduled_close_date - keyword_meta.remind_before_close_delay
                 )
                 logging.info(f"Remind time: {remind_time}")
-                logging.info(f"Last reminder data: {last_reminder_date}")
+                logging.info(f"Last reminder date: {last_reminder_date}")
                 remind = (
                     (now > remind_time)  # It's time to send reminder
                     and (  # .. and it hasn't been sent yet
