@@ -45,5 +45,11 @@ jobs:
                 "remove_label_on_close": true,
                 "remind_before_close_delay": "PT30M",
                 "remind_before_close_message": "We are still waiting for info"
+              },
+              "answered": {
+                "delay": "PT30M",
+                "message": "Closing as asnwered.",
+                "remove_label_on_comment": true,
+                "remove_label_on_close": true
               }
             }
