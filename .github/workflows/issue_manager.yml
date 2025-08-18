@@ -32,7 +32,7 @@ jobs:
       - run: pip install -r requirements-issue-manager.txt
 
       - name: Run issue manager
-        run: python main.py
+        run: python issue_manager.py
         env:
           INPUT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INPUT_CONFIG: |
