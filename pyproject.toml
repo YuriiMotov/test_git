@@ -1,5 +1,5 @@
 [tool.poetry]
-version = "1.0.3"
+version = "1.0.4"
 name = "test-git"
 description = ""
 authors = ["Yurii Motov <yurii.motov.monte@gmail.com>"]
