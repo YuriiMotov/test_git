@@ -42,6 +42,8 @@ jobs:
                 "delay": "P0DT0H15M5S",
                 "message": "Closing after 15 minutes of waiting for the additional info requested.",
                 "remove_label_on_comment": true,
-                "remove_label_on_close": true
+                "remove_label_on_close": true,
+                "remind_before_close_delay": "P0DT0H5M0S",
+                "remind_before_close_message": "We are still waiting for info"
               }
             }
