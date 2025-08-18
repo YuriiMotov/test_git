@@ -1,0 +1,47 @@
+name: Issue Manager
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  issue_comment:
+    types:
+      - created
+      - edited
+  issues:
+    types:
+      - labeled
+  pull_request_target:
+    types:
+      - labeled
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  issue-manager:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - run: pip install -r requirements-issue-manager.txt
+
+      - name: Run issue manager
+        run: python main.py
+        env:
+          INPUT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_CONFIG: |
+            {
+              "$schema": "https://raw.githubusercontent.com/tiangolo/issue-manager/master/schema.json",
+              "waiting": {
+                "delay": "P0DT0H15M5S",
+                "message": "Closing after 15 minutes of waiting for the additional info requested.",
+                "remove_label_on_comment": true,
+                "remove_label_on_close": true
+              }
+            }
