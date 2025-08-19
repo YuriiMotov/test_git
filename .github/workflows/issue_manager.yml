@@ -43,8 +43,10 @@ jobs:
                 "message": "Closing after 1 hour of waiting for the additional info requested.",
                 "remove_label_on_comment": true,
                 "remove_label_on_close": true,
-                "remind_before_close_delay": "PT30M",
-                "remind_before_close_message": "We are still waiting for info"
+                "reminder": {
+                  "delay": "PT30M",
+                  "message": "We are still waiting for info"
+                }
               },
               "answered": {
                 "delay": "PT30M",

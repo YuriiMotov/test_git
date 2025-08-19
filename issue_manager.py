@@ -15,6 +15,11 @@ from pydantic_settings import BaseSettings
 REMINDER_MARKER = "<!-- reminder -->"
 
 
+class Reminder(BaseModel):
+    message: str = "This issue will be closed automatically in 1 day if no further activity."
+    delay: timedelta = timedelta(days=1)
+
+
 class KeywordMeta(BaseModel):
     delay: timedelta = timedelta(days=10)
     message: str = (
@@ -22,8 +27,7 @@ class KeywordMeta(BaseModel):
     )
     remove_label_on_comment: bool = True
     remove_label_on_close: bool = False
-    remind_before_close_delay: Optional[timedelta] = None
-    remind_before_close_message: str = ""
+    reminder: Optional[Reminder] = None
 
 
 class Settings(BaseSettings):
@@ -138,7 +142,8 @@ def close_issue(
 
 
 def send_reminder(*, issue: Issue, keyword_meta: KeywordMeta) -> None:
-    message = keyword_meta.remind_before_close_message
+    assert keyword_meta.reminder is not None
+    message = keyword_meta.reminder.message
     logging.info(f"Send reminder: #{issue.number} with message: {message}")
     issue.create_comment(f"{REMINDER_MARKER}\n{message}")
 
@@ -149,24 +154,7 @@ def process_issue(*, issue: Issue, settings: Settings) -> None:
     events = list(issue.get_events())
     labeled_events = get_labeled_events(events)
     last_date = get_last_interaction_date(issue)
-    logging.info(f"Last non-reminder comment date: {last_date}")
     last_reminder_date = get_last_reminder_date(issue)
-
-    # ----
-    comments = issue.get_comments()
-    last_comment_date: Optional[datetime] = None
-    last_comment: Optional[IssueComment] = None
-    for comment in comments:
-        if not last_comment_date or (comment.created_at > last_comment_date):
-            last_comment_date = comment.created_at
-            last_comment = comment
-
-    if last_comment:
-        logging.info(f"Last comment body: {last_comment.body}")
-    else:
-        logging.info("Last comment is None")
-    # ------
-
     now = datetime.now(timezone.utc)
     for keyword, keyword_meta in settings.input_config.items():
         # Check closable delay, if enough time passed and the issue could be closed
@@ -179,15 +167,12 @@ def process_issue(*, issue: Issue, settings: Settings) -> None:
             )
             # Check if we need to send a reminder
             scheduled_close_date = keyword_event.created_at + keyword_meta.delay
-            logging.info(f"Planed close date: {scheduled_close_date}")
-            remind = False
-            if keyword_meta.remind_before_close_delay:
+            need_send_reminder = False
+            if keyword_meta.reminder and keyword_meta.reminder.delay:
                 remind_time = (  # Time point after which we should send reminder
-                    scheduled_close_date - keyword_meta.remind_before_close_delay
+                    scheduled_close_date - keyword_meta.reminder.delay
                 )
-                logging.info(f"Remind time: {remind_time}")
-                logging.info(f"Last reminder date: {last_reminder_date}")
-                remind = (
+                need_send_reminder = (
                     (now > remind_time)  # It's time to send reminder
                     and (  # .. and it hasn't been sent yet
                         not last_reminder_date or (last_reminder_date < remind_time)
@@ -201,8 +186,9 @@ def process_issue(*, issue: Issue, settings: Settings) -> None:
                 if keyword_meta.remove_label_on_comment:
                     logging.info(f'Removing label: "{keyword}"')
                     issue.remove_from_labels(keyword)
-            elif remind:
+            elif need_send_reminder:
                 send_reminder(issue=issue, keyword_meta=keyword_meta)
+                break
             elif closable_delay:
                 close_issue(
                     issue=issue,
