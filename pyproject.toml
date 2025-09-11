@@ -1,17 +1,14 @@
-[tool.poetry]
-version = "1.0.7"
+[project]
 name = "test-git"
+version = "0.1.7"
 description = ""
-authors = ["Yurii Motov <yurii.motov.monte@gmail.com>"]
 readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
 
-[tool.poetry.dependencies]
-python = "^3.11"
+[dependency-groups]
+dev = [
+    "bump-my-version>=1.2.1",
+]
 
 
-[tool.poetry.group.DEV.dependencies]
-bump-my-version = "^1.0.1"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
