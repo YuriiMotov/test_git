@@ -1,0 +1,69 @@
+name: Resolve lockfile conflicts
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to update"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  resolve-lockfiles:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch PR branch and main
+        run: |
+          gh pr checkout ${{ github.event.inputs.pr_number }}
+          git fetch origin main
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Ensure merge driver
+        run: git config --local merge.ours.driver true
+
+      - name: Merge main into PR branch
+        run: |
+          git merge --no-edit origin/main || true
+          if git ls-files -u | grep -q .; then
+            echo "Unresolved conflicts remain (not just lockfiles). Aborting."
+            exit 1
+          fi
+
+      - name: Regenerate package-lock.json (npm)
+        run: |
+          if [ -f package.json ] && [ -f package-lock.json ]; then
+            npm install --package-lock-only
+            git add package-lock.json
+          fi
+
+      - name: Regenerate uv.lock (Python)
+        run: |
+          if [ -f uv.lock ]; then
+            uv lock
+            git add uv.lock || true
+          fi
+
+      - name: Commit and push
+        run: |
+          if git diff --cached --quiet; then
+            echo "No lockfile updates to commit"
+          else
+            git commit -m "chore: auto-merge main and regenerate lockfiles"
+            git push origin HEAD
+          fi
