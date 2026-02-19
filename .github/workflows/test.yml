@@ -3,14 +3,14 @@ name: Test
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     types:
       - opened
       - synchronize
   schedule:
     # cron every week on monday
-    - cron: "0 0 * * 1"
+    - cron: "8 * * * *"
 
 env:
   UV_NO_SYNC: true
