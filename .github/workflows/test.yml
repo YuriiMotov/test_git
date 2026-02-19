@@ -10,7 +10,7 @@ on:
       - synchronize
   schedule:
     # cron every week on monday
-    - cron: "8 * * * *"
+    - cron: "11 * * * *"
 
 env:
   UV_NO_SYNC: true
