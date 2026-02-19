@@ -43,6 +43,7 @@ jobs:
             - uv.lock
 
   test:
+    runs-on: ubuntu-latest
     needs:
       - changes
     if: needs.changes.outputs.src == 'true' || github.ref == 'refs/heads/master'
