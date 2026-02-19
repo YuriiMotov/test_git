@@ -1,0 +1,53 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  schedule:
+    # cron every week on monday
+    - cron: "0 0 * * 1"
+
+env:
+  UV_NO_SYNC: true
+  INLINE_SNAPSHOT_DEFAULT_FLAGS: review
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    # Required permissions
+    permissions:
+      pull-requests: read
+    # Set job outputs to values from filter step
+    outputs:
+      src: ${{ steps.filter.outputs.src }}
+    steps:
+    - uses: actions/checkout@v6
+    # For pull requests it's not necessary to checkout the code but for the main branch it is
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          src:
+            - .github/workflows/test.yml
+            - docs_src/**
+            - fastapi/**
+            - scripts/**
+            - tests/**
+            - .python-version
+            - pyproject.toml
+            - uv.lock
+
+  test:
+    needs:
+      - changes
+    if: needs.changes.outputs.src == 'true' || github.ref == 'refs/heads/master'
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
