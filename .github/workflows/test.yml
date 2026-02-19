@@ -42,6 +42,16 @@ jobs:
             - pyproject.toml
             - uv.lock
 
+  dump:
+    runs-on: ubuntu-latest
+    needs:
+      - changes
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
   test:
     runs-on: ubuntu-latest
     needs:
