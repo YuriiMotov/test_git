@@ -14,7 +14,7 @@ jobs:
     name: Check labels
     runs-on: ubuntu-latest
     steps:
-      - uses: agilepathway/label-checker@5e1bc754817308d2f007896b06daf1c55e567e20 # v1.6.64
+      - uses: agilepathway/label-checker@c3d16ad512e7cea5961df85ff2486bb774caf3c5 # v1.6.65
         with:
           one_of: major,minor,patch
           repo_token: ${{ secrets.GITHUB_TOKEN }}
