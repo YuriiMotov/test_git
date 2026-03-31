@@ -1,0 +1,31 @@
+name: Deploy app
+
+on:
+  workflow_dispatch:
+    inputs:
+      fastapi-cli-cloud-source:
+        description: 'fastapi-cli-cloud-source'
+        required: true
+        type: string
+        default: git+https://github.com/fastapilabs/fastapi-cloud-cli.git
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install dependencies
+        run: |
+          uv pip install ${{ inputs.fastapi-cli-cloud-source }}
+          uv pip install fastapi[standard]
+        
+      - name: Deploy to FastAPI Cloud
+        run: uv run fastapi deploy broken_app
+        env:
+          FASTAPI_CLOUD_TOKEN: ${{ secrets.FASTAPI_CLOUD_TOKEN }}
+          FASTAPI_CLOUD_APP_ID: ${{ secrets.FASTAPI_CLOUD_APP_ID }}
