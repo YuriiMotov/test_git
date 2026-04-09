@@ -72,7 +72,9 @@ jobs:
             git commit -m "🎨 Auto format"
             git push
           fi
-          git remote set-url origin https://github.com/${{ github.repository }}.git
+      - name: Clean up remote URL
+        if: always() && env.HAS_SECRETS == 'true'
+        run: git remote set-url origin "https://github.com/${{ github.repository }}.git"
       - uses: pre-commit-ci/lite-action@5d6cc0eb514c891a40562a58a8e71576c5c7fb43 # v1.1.0
         if: env.HAS_SECRETS == 'false'
         with:
