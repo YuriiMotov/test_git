@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.116.1",
-    "asyncer>=0.0.15,<0.0.17",
+    "asyncer>=0.0.17,<0.0.18",
 ]
 
 [project.optional-dependencies]
