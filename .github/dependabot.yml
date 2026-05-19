@@ -1,11 +1,37 @@
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
+
+  # Python — development deps
+  - package-ecosystem: "uv"
     directory: "/"
     schedule:
-      interval: "daily"
-  # pre-commit
-  - package-ecosystem: "pre-commit"
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ⬆
+    allow:
+      - dependency-type: "development"
+    labels:
+      - "internal"
+      - "dependencies"
+      - "python:uv"
+    groups:
+      python-dev-packages:
+        patterns:
+          - "*"
+
+  # Python — production deps
+  - package-ecosystem: "uv"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ⬆
+    allow:
+      - dependency-type: "production"
+    labels:
+      - "dependencies"
+      - "python:uv"
