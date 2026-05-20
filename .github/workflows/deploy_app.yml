@@ -8,6 +8,11 @@ on:
         required: true
         type: string
         default: git+https://github.com/fastapilabs/fastapi-cloud-cli.git
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
 
 jobs:
   deploy:
@@ -26,7 +31,11 @@ jobs:
           uv venv
           uv pip install ${{ inputs.fastapi-cli-cloud-source }}
           uv pip install fastapi[standard]
-        
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+
       - name: Deploy to FastAPI Cloud
         run: uv run fastapi deploy broken_app
         env:
