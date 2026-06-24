@@ -17,10 +17,10 @@ standard = [
 
 [dependency-groups]
 dev = [
-    "bump-my-version>=1.2.1",
-    "prek>=0.3.8",
-    "ruff>=0.15.9",
-    "zizmor>=1.23.1",
+    "bump-my-version>=1.4.0",
+    "prek>=0.4.5",
+    "ruff>=0.15.17",
+    "zizmor>=1.25.2",
 ]
 
 github-actions = [
@@ -30,5 +30,5 @@ github-actions = [
 ]
 
 [build-system]
-requires = ["uv_build>=0.11.7,<0.12.0"]
+requires = ["uv_build>=0.11.21,<0.12.0"]
 build-backend = "uv_build"
