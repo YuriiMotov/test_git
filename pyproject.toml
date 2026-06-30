@@ -17,10 +17,10 @@ standard = [
 
 [dependency-groups]
 dev = [
-    "bump-my-version>=1.2.1",
+    "bump-my-version>=1.4.1",
     "prek>=0.4.5",
-    "ruff>=0.15.9",
-    "zizmor>=1.23.1",
+    "ruff>=0.15.18",
+    "zizmor>=1.26.1",
 ]
 
 github-actions = [
