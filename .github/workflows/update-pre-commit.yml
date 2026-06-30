@@ -9,7 +9,6 @@ permissions: {}
 
 jobs:
   update-pre-commit:
-    if: github.repository_owner == 'fastapi'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
