@@ -915,15 +915,16 @@ wheels = [
 
 [[package]]
 name = "sqlmodel"
-version = "0.0.37"
+version = "0.0.39"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "sqlalchemy" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fb/26/1d2faa0fd5a765267f49751de533adac6b9ff9366c7c6e7692df4f32230f/sqlmodel-0.0.37.tar.gz", hash = "sha256:d2c19327175794faf50b1ee31cc966764f55b1dedefc046450bc5741a3d68352", size = 85527, upload-time = "2026-02-21T16:39:47.038Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/68/ee/22a0559283c3cf6048678e787ed5d4959dcd00dedd8ba4567eeae684eeb1/sqlmodel-0.0.39.tar.gz", hash = "sha256:23d8e50a8d8ee936032ed79c55023a5d618dd6bc3c510bbf4909d1a7a605a570", size = 91057, upload-time = "2026-06-25T13:01:38.475Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b1/e1/7c8d18e737433f3b5bbe27b56a9072a9fcb36342b48f1bef34b6da1d61f2/sqlmodel-0.0.37-py3-none-any.whl", hash = "sha256:2137a4045ef3fd66a917a7717ada959a1ceb3630d95e1f6aaab39dd2c0aef278", size = 27224, upload-time = "2026-02-21T16:39:47.781Z" },
+    { url = "https://files.pythonhosted.org/packages/cf/7d/b9813a582d4eb310be35e1fc7dfaae71207d7b62e9e53be314ebd251b53b/sqlmodel-0.0.39-py3-none-any.whl", hash = "sha256:90ebe92ce5cc11d7fff8dc7cb594790a102333c8fe7c14865254f6fc5c939795", size = 29680, upload-time = "2026-06-25T13:01:37.494Z" },
 ]
 
 [[package]]
@@ -942,7 +943,7 @@ wheels = [
 [[package]]
 name = "test-git"
 version = "0.1.7"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "asyncer" },
     { name = "fastapi" },
@@ -971,7 +972,7 @@ github-actions = [
 requires-dist = [
     { name = "asyncer", specifier = ">=0.0.15,<0.0.17" },
     { name = "fastapi", specifier = ">=0.138.0" },
-    { name = "sqlmodel", marker = "extra == 'standard'", specifier = ">=0.0.30" },
+    { name = "sqlmodel", marker = "extra == 'standard'", specifier = ">=0.0.39" },
     { name = "typer", marker = "extra == 'standard'", specifier = ">=0.26.7,<0.27.0" },
 ]
 provides-extras = ["standard"]
