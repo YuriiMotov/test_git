@@ -35,16 +35,16 @@ wheels = [
 
 [[package]]
 name = "asyncer"
-version = "0.0.16"
+version = "0.0.18"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
     { name = "sniffio" },
     { name = "typing-extensions", marker = "python_full_version < '3.15'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/37/5159353490a7498e6a8615bf180c6fcf9d04fc6de234d34869ebae5ca497/asyncer-0.0.16.tar.gz", hash = "sha256:06bbed8db624397dd79f0e7b89153fd3003a94f9cb678b6c033a1cd221108480", size = 19496, upload-time = "2026-02-21T16:23:38.286Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/95/e3/a9de31596d386b8e76e17c609e20775c6a414cff95d025551aca3c63f282/asyncer-0.0.18.tar.gz", hash = "sha256:dc233a466f85f1bc17dafcdb861b06291b64777a8d9076f7884467cbb66f95ef", size = 24503, upload-time = "2026-06-25T13:41:08.826Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8e/20/68ba43dc45f91a17092917ea05e0d0d7c28ecb0888e45ac7436549eda57f/asyncer-0.0.16-py3-none-any.whl", hash = "sha256:94f893e403b9ca20f99d78b8e5b1fca6957872c3d46bb6fab45c94b277bfe1ed", size = 9252, upload-time = "2026-02-21T16:23:37.5Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/62/73cea402f7c55b830bc02850f84724d9f6e3538c68610f69016f6f480a94/asyncer-0.0.18-py3-none-any.whl", hash = "sha256:054be3c0c3d7f0f79aac5b7d2cf7ad3a740bc465b62a77b48716a30c22679962", size = 12099, upload-time = "2026-06-25T13:41:07.98Z" },
 ]
 
 [[package]]
@@ -942,7 +942,7 @@ wheels = [
 [[package]]
 name = "test-git"
 version = "0.1.7"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "asyncer" },
     { name = "fastapi" },
@@ -969,7 +969,7 @@ github-actions = [
 
 [package.metadata]
 requires-dist = [
-    { name = "asyncer", specifier = ">=0.0.15,<0.0.17" },
+    { name = "asyncer", specifier = ">=0.0.18,<0.0.19" },
     { name = "fastapi", specifier = ">=0.138.0" },
     { name = "sqlmodel", marker = "extra == 'standard'", specifier = ">=0.0.30" },
     { name = "typer", marker = "extra == 'standard'", specifier = ">=0.26.7,<0.27.0" },
